@@ -29,6 +29,7 @@
 
       $sql = "SELECT * FROM `login` WHERE `username` LIKE '$username' AND `pass` LIKE '$pass'";
       $result = mysqli_query($conn, $sql);
+      $row = mysqli_fetch_array($result);
       $check = mysqli_num_rows($result);
       if($check >= 1)
       {
@@ -36,6 +37,9 @@
         session_start();
         $_SESSION['loggedin'] = true;
         $_SESSION['username'] = $username;
+        $_SESSION['mobile'] = $row['mobile'];
+        $_SESSION['email'] = $row['email'];
+        $_SESSION['pass'] = $row['pass'];
         header("location: home.php");
       }
       else

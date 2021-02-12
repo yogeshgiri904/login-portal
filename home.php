@@ -11,6 +11,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -27,40 +28,160 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Radhey Industries</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      
+    <a class="navbar-brand" href="#">
+      <img src="asset/logo.png" class="rounded-circle" width="35" height="35" class="d-inline-block align-top" alt="Logo">
+      Radhey Industries
+    </a>
+
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
                 <a class="nav-link" href="#">Home</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Profile</a>
+                <a class="nav-link" href="profile.php">Profile</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">Messenger</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Pricing</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" href="#">Settings</a>
             </li>
-            <li class="nav-item">
-                <a class="btn btn-danger" href="sessionOut.php">Sign Out</a>
-            </li>
           </ul>
-            <p class= "text-white">Welcome,
-            <?php
-                echo $_SESSION['username'];
-
-            ?>
-            </p>
+        </div>
+        <div class="nav-item dropdown">
+            <a class="navbar-brand" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <img src="asset/user.png" class="rounded-circle" width="30" height="30" class="d-inline-block align-top" alt="user">
+              <?php echo $_SESSION['username']; ?> <i class="fa fa-caret-down" aria-hidden="true"></i>
+            </a>
+            <br>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="#">Dashboard</a>
+              <a class="dropdown-item" data-toggle="modal" data-target=".bd-example-modal-xl" href="">Edit Profile</a>
+              <a class="dropdown-item" href="sessionOut.php">Sign Out</a>
+            </div>
         </div>
       </nav>
+
+      <!-- Extra large modal -->
+
+      <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content p-5">
+          <form method = "POST">
+              <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Username</label>
+                  <div class="col-sm-2 ">
+                  <input type="text" readonly class="form-control-plaintext pl-2" id="staticEmail" placeholder="<?php echo $_SESSION['username']?> ">
+                 </div>
+                 <div class="col-sm-8 text-success"><span><i class="fa fa-check-circle" aria-hidden="true"></i></span> </div>
+              </div>
+
+                <div class="form-group row">
+                  <label class="col-sm-2 col-form-label">First Name</label>
+                  <div class="col-sm-4">
+                    <input type="text" class="form-control" name="fn">
+                  </div>
+                  <label class="col-sm-2 col-form-label">Last Name</label>
+                  <div class="col-sm-4">
+                    <input type="text" class="form-control" name="ln">
+                  </div>
+                </div>
+
+                <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Gender</label>
+                <div class="col-sm-10">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" checked="checked" name="gender" value="male">
+                      <label class="form-check-label" for="inlineRadio1">Male</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="gender" value="female">
+                      <label class="form-check-label" for="inlineRadio2">Female</label>
+                    </div>
+                  </div>
+              </div>
+
+              <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Email</label>
+                  <div class="col-sm-6 ">
+                  <input type="text" readonly class="form-control-plaintext pl-2" id="staticEmail" placeholder=" <?php echo $_SESSION['email']?> ">
+                 </div>
+                 <div class="col-sm-4">
+                 <a href="#">Verify Email</a>
+                 </div>
+              </div>
+
+              <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Mobile</label>
+                  <div class="col-sm-6 ">
+                  <input type="text" readonly class="form-control-plaintext pl-2" id="staticEmail" placeholder=" <?php echo $_SESSION['mobile']?> ">
+                 </div>
+                 <div class="col-sm-4">
+                  <a href="#">Verify Mobile</a>
+                 </div>
+              </div>
+
+                <div class="form-group row">
+                <label class="col-sm-2 col-form-label">City</label>
+                  <div class="col-sm-10">
+                <input type="text" class="form-control" name="city">
+                </div>
+                </div>
+
+                <div class="form-group row">
+                <label class="col-sm-2 col-form-label">State</label>
+                  <div class="col-sm-10">
+                  <input type="text" class="form-control" name="state">
+                </div>
+                </div>
+
+                <div class="form-group row">
+                  <label class="col-sm-2 col-form-label">Country</label>
+                    <div class="col-sm-10">
+                    <select name="country" class="form-control">
+                        <option selected>India</option>
+                        <option>USA</option>
+                        <option>England</option>
+                        <option>Sri Lanka</option>
+                        <option>Bhutan</option>
+                        <option>Nepal</option>
+                      </select>
+                    </div>
+                </div>
+              <button type="submit" class="btn btn-primary">Update</button>
+            </form> 
+          </div>
+        </div>
+      </div>
+
+      <?php
+      include "conn.php";
+      if($_POST)
+      {
+        $fn = $_POST['fn'];
+        $ln = $_POST['ln'];
+        $gender = $_POST['gender'];
+        $city = $_POST['city'];
+        $state = $_POST['state'];
+        $country = $_POST['country'];
+        $username = $_SESSION['username'];
+        $email = $_SESSION['email'];
+        $mobile = $_SESSION['mobile'];
+        $pass = $_SESSION['pass'];
+
+        $updatesql = "INSERT INTO `profile` (`username`, `email`, `mobile`, `pass`, `fn`, `ln`, `gender`, `city`, `state`, `country`, `date`) VALUES ('$username', '$email', '$mobile', '$pass', '$fn', '$ln', '$gender', '$city', '$state', '$country', current_timestamp());";
+        $updateResult = mysqli_query($conn, $updatesql);
+        if($updateResult)
+        {
+          echo '<div class="alert alert-success" role="alert">
+          Your profile has been updated.</div>';
+        }
+        else{
+          echo "Profile has not been updated. ERROR!!!";
+        }
+      }
+      ?>
 
 
       <div id="carouselExampleInterval" class="carousel slide" data-ride="carousel">
@@ -85,9 +206,9 @@
         </a>
       </div>
       <script>
-              $('.carousel').carousel({
-        interval: 2000
-      });
+        $('.carousel').carousel({
+          interval: 2000
+        });
       </script>
 
 </body>

@@ -49,7 +49,7 @@
     else if($UserCheck >= 1)
     {
       echo '<div class="alert alert-danger" role="alert">';
-      echo "'".$username."'";
+      echo "'$username'";
       echo ' username not available. </div>';
     }
     else

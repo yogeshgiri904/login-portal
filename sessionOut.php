@@ -13,7 +13,7 @@
     session_unset();
     session_destroy();
     echo "<h2>You have been logged out !!!</h2>";
-    echo '<br><br>Redirecting to <a href="login.php"> login </a> page';
+    echo '<br><br>Redirecting to <a href="login.php"> Sign In </a> page';
     echo '<div id="countdown">5 seconds remaining... </div>';
 
 ?>

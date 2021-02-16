@@ -1,8 +1,18 @@
 <?php
+  include "conn.php";
   session_start();
   if($_SESSION['loggedin']!=true)
   {
     header("location: login.php");
+  }
+
+  $username = $_SESSION['username'];
+  $folder = "asset/user.png";
+  $selectSql="SELECT * FROM `dp` WHERE `username` = '$username' AND `sn`=(SELECT max(sn) FROM `dp`);";
+  $result = mysqli_query($conn, $selectSql);
+  $data =mysqli_fetch_array($result);
+  if ($data) {
+      $folder = $data['folder'];
   }
 ?>
 <!DOCTYPE html>
@@ -51,19 +61,18 @@
         </div>
         <div class="nav-item dropdown">
             <a class="navbar-brand" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <img src="asset/user.png" class="rounded-circle" width="30" height="30" class="d-inline-block align-top" alt="user">
+              <img src="<?php echo $folder ?>" class="rounded-circle" width="30" height="30" class="d-inline-block align-top" alt="user">
               <?php echo $_SESSION['username']; ?> <i class="fa fa-caret-down" aria-hidden="true"></i>
             </a>
             <br>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
               <a class="dropdown-item" href="#">Dashboard</a>
+              <a class="dropdown-item" href="profile.php">Account</a>
               <a class="dropdown-item" data-toggle="modal" data-target=".bd-example-modal-xl" href="">Edit Profile</a>
               <a class="dropdown-item" href="sessionOut.php">Sign Out</a>
             </div>
         </div>
       </nav>
-
-      <!-- Extra large modal -->
 
       <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
@@ -122,18 +131,22 @@
                  </div>
               </div>
 
-                <div class="form-group row">
-                <label class="col-sm-2 col-form-label">City</label>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Work</label>
                   <div class="col-sm-10">
-                <input type="text" class="form-control" name="city">
+                <input type="text" class="form-control" name="work">
                 </div>
                 </div>
 
                 <div class="form-group row">
-                <label class="col-sm-2 col-form-label">State</label>
-                  <div class="col-sm-10">
-                  <input type="text" class="form-control" name="state">
-                </div>
+                  <label class="col-sm-2 col-form-label">City</label>
+                  <div class="col-sm-4">
+                    <input type="text" class="form-control" name="city">
+                  </div>
+                  <label class="col-sm-1 col-form-label">State</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" name="state">
+                  </div>
                 </div>
 
                 <div class="form-group row">
@@ -156,21 +169,18 @@
       </div>
 
       <?php
-      include "conn.php";
       if($_POST)
       {
         $fn = $_POST['fn'];
         $ln = $_POST['ln'];
+        $name = $fn." ".$ln;
+        $work = $_POST['work'];
         $gender = $_POST['gender'];
         $city = $_POST['city'];
         $state = $_POST['state'];
         $country = $_POST['country'];
-        $username = $_SESSION['username'];
-        $email = $_SESSION['email'];
-        $mobile = $_SESSION['mobile'];
-        $pass = $_SESSION['pass'];
 
-        $updatesql = "INSERT INTO `profile` (`username`, `email`, `mobile`, `pass`, `fn`, `ln`, `gender`, `city`, `state`, `country`, `date`) VALUES ('$username', '$email', '$mobile', '$pass', '$fn', '$ln', '$gender', '$city', '$state', '$country', current_timestamp());";
+        $updatesql = "INSERT INTO `profile` (`username`, `name`, `gender`, `work`, `city`, `state`, `country`, `date`) VALUES ('$username', '$name', '$gender', '$work', '$city', '$state', '$country', current_timestamp())";
         $updateResult = mysqli_query($conn, $updatesql);
         if($updateResult)
         {

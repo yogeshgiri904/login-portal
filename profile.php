@@ -8,17 +8,74 @@
 <?php
     include "conn.php";
     $username = $_SESSION['username'];
-    $sql = "SELECT * FROM `profile` WHERE `username` LIKE '$username'";
+    $folder = "asset/user.png";
+    $selectSql="SELECT * FROM `dp` WHERE `username` = '$username' AND `sn`=(SELECT max(sn) FROM `dp`);";
+    $result = mysqli_query($conn, $selectSql);
+    $data =mysqli_fetch_array($result);
+    if ($data) {
+        $folder = $data['folder'];
+    }
+
+    if ($_POST) {
+        $fileName = $_FILES['userimg']['name'];
+        $fileType = $_FILES['userimg']['type'];
+        $fileTemp = $_FILES['userimg']['tmp_name'];
+        $fileSize = $_FILES['userimg']['size'];
+        $folder = "asset/$fileName";
+        move_uploaded_file($fileTemp, $folder);
+
+        if($fileSize==NULL)
+        {
+            echo '<div class="alert alert-danger" role="alert">
+            Select another image from gallary first.</div>';
+            if ($data) {
+                $folder = $data['folder'];
+            }
+            else{
+                $folder = "asset/user.png";
+            }
+        
+        }
+        else{
+            $sql="INSERT INTO `dp` (`username`, `name`, `size`, `folder`, `date`) VALUES ('$username', '$fileName', '$fileSize', '$folder', current_timestamp());";
+            $result = mysqli_query($conn, $sql);
+            if($result)
+            {
+                echo '<div class="alert alert-success" role="alert">
+                Your profile picture has been updated.</div>';
+              }
+              else{
+                echo "Profile picture has not been updated. ERROR!!!";
+              }
+        }
+    }
+
+?>
+<?php
+    include "conn.php";
+    $username = $_SESSION['username'];
+    $sql="SELECT * FROM `profile` WHERE `username` = '$username' AND `sn`=(SELECT max(sn) FROM `profile`);";
     $result = mysqli_query($conn, $sql);
     $data = mysqli_fetch_array($result);
     if($data)
     {
-        $fn = $data['fn'];
-        $ln = $data['ln'];
+        $name = $data['name'];
+        $work = $data['work'];
         $gender = $data['gender'];
         $city = $data['city'];
         $state = $data['state'];
         $country = $data['country'];
+        $address = $city.", ".$state;
+    }
+    else
+    {
+        $name = $username;
+        $work = "Add your work";
+        $gender = NULL ;
+        $city = NULL ;
+        $state = NULL ;
+        $country = "Add your country" ;
+        $address = NULL;
     }
 ?>
 <!DOCTYPE html>
@@ -32,16 +89,15 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="asset/profile.css">
+    <link rel="stylesheet" href="css/profile.css">
 </head>
 <body>
 <div class="container emp-profile">
-            <form method="POST" enctype="multiport/form-data">
+            <form method="POST" enctype="multipart/form-data">
                 <div class="row">
                     <div class="col-md-4">
                         <div class="profile-img">
-                            <!-- <img src="<?php echo $folder.$_POST['userimg']; ?>" alt="user"/> -->
-                            <img src="asset/user.png" alt="user"/>
+                            <img src="<?php echo $folder;?>" alt="user"/>
                             <div class="file btn btn-lg btn-primary">
                                 Change Photo
                                 <input type="file" name="userimg"/>
@@ -53,11 +109,11 @@
                     <div class="col-md-6">
                         <div class="profile-head">
                             <h4>
-                                Yogesh Goswami
+                            <?php echo $name; ?> <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
                             </h4>
                             <br>
                             <h6>
-                                <i class="fa fa-briefcase" aria-hidden="true"></i> Web Developer and Designer
+                                <?php echo '<i class="fa fa-briefcase" aria-hidden="true"></i> '.$work;?>
                             </h6>
                             <h6>
                                 <?php echo '<i class="fa fa-map-marker" aria-hidden="true"></i> '.$country;?>
@@ -72,23 +128,20 @@
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <input type="submit" class="profile-edit-btn" name="submit" value="Upload"/>
+                        <button class="profile-edit-btn">Edit Profile</button>
                     </div>
                 </div>
-
-                <!-- <?php 
-                $folder = "asset/".$_POST['userimg'];
-                echo $folder;
-                print_r ($_FILES['userimg']);
-                move_uploaded_file($_POST['userimg'], $folder);
-                ?> -->
 
                 <div class="row">
                     <div class="col-md-4">
                         <div class="profile-work">
+                        <div class="d-flex align-center justify-content-center">
+                            <input type="submit" class="profile-edit-btn" name="submit" value="Upload"/>
+                        </div>
+                        <br>
                             <h5>IMPORTANT LINKS</h5>
                             <a href="home.php">Home</a><br/>
-                            <a href="">Dashboard</a><br/>
+                            <a href="home.php">Dashboard</a><br/>
                             <a href="">Messenger</a><br/>
                             <a href="">Pricing</a><br/>
                             <a href="">Settings</a><br/>
@@ -103,7 +156,7 @@
                                         <label>Username</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <p> <?php echo $_SESSION['username']; ?> <i class="fa fa-check-circle text-success" aria-hidden="true"></i></p>
+                                        <p> <?php echo $_SESSION['username']; ?></p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -111,7 +164,7 @@
                                         <label>Name</label>
                                     </div>
                                     <div class="col-md-6">
-                                    <p> <?php echo $fn." ".$ln; ?> </p>
+                                    <p> <?php echo $name; ?> </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -135,7 +188,7 @@
                                         <label>Address</label>
                                     </div>
                                     <div class="col-md-6">
-                                    <p> <?php echo $city.', '.$state; ?> </p>
+                                    <p> <?php echo $address; ?> </p>
                                     </div>
                                 </div>
                                 <div class="row">
